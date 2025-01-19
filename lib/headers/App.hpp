@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <quick_imgui/quick_imgui.hpp>
 #include "Board.hpp"
 
 class App {

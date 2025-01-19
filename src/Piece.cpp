@@ -1,4 +1,4 @@
-#include "../lib/headers/Piece.hpp"
+#include "../lib/headers/Pieces/Piece.hpp"
 
 Piece::Piece(ImVec2 position, ImVec4 color)
     : position(position), color(color) {}
@@ -15,10 +15,10 @@ ImVec2 Piece::get_position()
 
 void Piece::set_color(ImVec4 color)
 {
-    color = color;
+    this->color = color;
 }
 
 void Piece::set_position(ImVec2 position)
 {
-    position = position;
+    this->position = position;
 }
