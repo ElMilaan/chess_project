@@ -1,6 +1,12 @@
 #include "Piece.hpp"
 
 class Bishop : public Piece {
-private:
 public:
+    Bishop(Color color)
+        : Piece(color)
+    {
+        symbol = "v";
+    };
+
+private:
 };

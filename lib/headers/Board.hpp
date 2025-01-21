@@ -3,10 +3,16 @@
 #include <map>
 #include <quick_imgui/quick_imgui.hpp>
 #include <vector>
+#include "Pieces/Bishop.hpp"
+#include "Pieces/King.hpp"
+#include "Pieces/Knight.hpp"
+#include "Pieces/Pawn.hpp"
 #include "Pieces/Piece.hpp"
+#include "Pieces/Queen.hpp"
+#include "Pieces/Rook.hpp"
 #include "Space.hpp"
 
-enum PieceTypes {
+enum PieceType {
     KING,
     QUEEN,
     BISHOP,
@@ -24,26 +30,19 @@ private:
     ImVector<Piece> pieces;
 
 public:
-    static const unsigned int                              SPACE_SIZE{100};
-    static const unsigned int                              NB_W_PIECES{16};
-    static const unsigned int                              NB_B_PIECES{16};
-    static const inline std::map<PieceTypes, unsigned int> PIECES_COUNT{
-        {KING, 1},
-        {QUEEN, 1},
-        {BISHOP, 2},
-        {ROOK, 2},
-        {KNIGHT, 2},
-        {PAWN, 8}
-    };
+    static const unsigned int                  SPACE_SIZE{100};
+    static const inline std::vector<PieceType> PIECES_DISPOSITION{ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK};
 
     Board(unsigned int dimension);
     void         set_dimension(unsigned int dimension) const;
     unsigned int get_dimension() const;
 
+    void display_pieces();
     void display_spaces();
     void debug();
 
-    void insert_space(const size_t pos, Color color);
+    void insert_space(const size_t pos, Color color, Piece* piece);
+    void insert_piece(PieceType type, Color color);
     void fill_spaces();
     void fill_pieces();
     void init();

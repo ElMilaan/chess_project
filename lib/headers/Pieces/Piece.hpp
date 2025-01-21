@@ -10,19 +10,19 @@ enum Color {
 
 class Piece {
 public:
-    Piece(Color color, char symbol);
+    Piece(Color color);
     virtual ~Piece() = default;
     // void         set_position(unsigned int position) const;
     void set_color(Color color) const;
     // unsigned int get_position() const;
-    Color get_color() const;
-    char  get_symbol() const;
+    Color       get_color() const;
+    const char* get_symbol() const;
 
-    virtual void can_move() const = 0;
+    // virtual void can_move() const = 0;
     // virtual ImVector<Space> possible_move() const = 0;
 
-private:
+protected:
     // unsigned int position;
-    Color color;
-    char  symbol;
+    Color       color;
+    const char* symbol;
 };

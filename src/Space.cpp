@@ -1,8 +1,8 @@
 #include <cmath>
 #include "../lib/headers/Board.hpp"
 
-Space::Space(const unsigned int position, Color color, Piece* piece)
-    : position(position), color(color), piece(piece) {}
+Space::Space(const unsigned int position, Color color, Piece* piece_ptr)
+    : position(position), color(color), piece_ptr(piece_ptr) {}
 
 void Space::set_position(unsigned int position) const
 {
@@ -19,6 +19,11 @@ unsigned int Space::get_position() const
 Color Space::get_color() const
 {
     return color;
+}
+
+Piece* Space::get_piece_ptr() const
+{
+    return piece_ptr;
 }
 
 void Space::display(const unsigned int dim) const

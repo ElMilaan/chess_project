@@ -6,11 +6,12 @@
 
 class Space {
 public:
-    Space(const unsigned int position, Color color, Piece* piece);
+    Space(const unsigned int position, Color color, Piece* piece_ptr);
     void         set_position(const unsigned int position) const;
     void         set_color(Color color) const;
     unsigned int get_position() const;
     Color        get_color() const;
+    Piece*       get_piece_ptr() const;
 
     void display(const unsigned int dim) const;
 
@@ -19,5 +20,5 @@ public:
 private:
     unsigned int position;
     Color        color;
-    Piece*       piece;
+    Piece*       piece_ptr;
 };

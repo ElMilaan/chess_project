@@ -1,6 +1,12 @@
 #include "Piece.hpp"
 
 class Knight : public Piece {
-private:
 public:
+    Knight(Color color)
+        : Piece(color)
+    {
+        symbol = "m";
+    };
+
+private:
 };

@@ -1,7 +1,7 @@
 #include "../lib/headers/Pieces/Piece.hpp"
 
-Piece::Piece(Color color, char symbol)
-    : color(color), symbol(symbol) {}
+Piece::Piece(Color color)
+    : color(color) {}
 
 Color Piece::get_color() const
 {
@@ -13,7 +13,7 @@ Color Piece::get_color() const
 //     return position;
 // }
 
-char Piece::get_symbol() const
+const char* Piece::get_symbol() const
 {
     return symbol;
 }

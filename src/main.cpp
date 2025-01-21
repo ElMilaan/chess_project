@@ -1,7 +1,14 @@
 #include <imgui.h>
+#include <fstream>
 #include <iostream>
 #include "../lib/headers/App.hpp"
 #include "quick_imgui/quick_imgui.hpp"
+
+void loadCustomFont()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->AddFontFromFileTTF("C:/Users/Milan/Desktop/Travail/1 - IMAC/A2/Prog/S4/chess_project/lib/fonts/tt_usual.ttf", 48.0f);
+}
 
 int main()
 {
@@ -9,6 +16,10 @@ int main()
     Board board(8);
     board.init();
     board.debug();
+
+    ImGui::CreateContext();
+
+    loadCustomFont();
 
     quick_imgui::loop("Chess", [&]() {}, [&]() {
 

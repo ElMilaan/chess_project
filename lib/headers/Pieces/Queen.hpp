@@ -1,6 +1,12 @@
 #include "Piece.hpp"
 
 class Queen : public Piece {
-private:
 public:
+    Queen(Color color)
+        : Piece(color)
+    {
+        symbol = "w";
+    };
+
+private:
 };
