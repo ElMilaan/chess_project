@@ -1,21 +1,21 @@
 #include "../lib/headers/Board.hpp"
 
-Space::Space(ImVec2 position, Color color)
+Space::Space(const unsigned int position, Color color)
     : position(position), color(color) {}
 
-void Space::set_posiiton(ImVec2 position)
+void Space::set_position(unsigned int position) const
 {
     position = position;
 }
-void Space::set_color(Color color)
+void Space::set_color(Color color) const
 {
     color = color;
 }
-ImVec2 Space::get_position()
+unsigned int Space::get_position() const
 {
     return position;
 }
-Color Space::get_color()
+Color Space::get_color() const
 {
     return color;
 }

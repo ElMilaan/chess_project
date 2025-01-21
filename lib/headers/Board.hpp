@@ -7,22 +7,25 @@
 
 class Board {
 private:
-    ImVec2             dimension;
-    unsigned int       nb_pieces;
-    std::vector<Space> spaces;
-    std::vector<Piece> pieces;
+    unsigned int    dimension;
+    unsigned int    nb_pieces;
+    ImVector<Space> spaces;
+    ImVector<Piece> pieces;
 
 public:
-    Board(ImVec2 dimension, unsigned int nb_pieces);
-    void               set_dimension(ImVec2 dimension);
-    void               set_spaces(std::vector<Space> spaces);
-    void               set_pieces(std::vector<Piece> pieces);
-    ImVec2             get_dimension();
-    std::vector<Space> get_spaces();
-    std::vector<Piece> get_pieces();
+    static const unsigned int SPACE_SIZE{100};
 
-    void insert_space(size_t pos_x, size_t pos_y, Color color);
+    Board(unsigned int dimension, unsigned int nb_pieces);
+    void            set_dimension(unsigned int dimension) const;
+    void            set_spaces(ImVector<Space> spaces) const;
+    void            set_pieces(ImVector<Piece> pieces) const;
+    unsigned int    get_dimension() const;
+    ImVector<Space> get_spaces() const;
+    ImVector<Piece> get_pieces() const;
+
+    void insert_space(const size_t pos, Color color);
     void fill_spaces();
+    void fill_pieces();
     void init();
     void render();
 };

@@ -2,19 +2,20 @@
 
 #include <iostream>
 #include <quick_imgui/quick_imgui.hpp>
+#include "../Space.hpp"
 
 class Piece {
 public:
-    Piece(ImVec2 position, ImVec4 color);
-    void   set_position(ImVec2 position);
-    void   set_color(ImVec4 color);
-    ImVec2 get_position();
-    ImVec4 get_color();
+    Piece(const unsigned int position, Color color);
+    void         set_position(unsigned int position) const;
+    void         set_color(Color color) const;
+    unsigned int get_position() const;
+    Color        get_color() const;
 
-    void move(ImVec2 new_position);
-    // virtual void possibleSpaces();
+    // virtual void            can_move();
+    // virtual ImVector<Space> possible_move();
 
 private:
-    ImVec2 position;
-    ImVec4 color;
+    unsigned int position;
+    Color        color;
 };

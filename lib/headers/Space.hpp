@@ -10,13 +10,13 @@ enum Color {
 
 class Space {
 public:
-    Space(ImVec2 position, Color color);
-    void   set_posiiton(ImVec2 position);
-    void   set_color(Color color);
-    ImVec2 get_position();
-    Color  get_color();
+    Space(const unsigned int position, Color color);
+    void         set_position(const unsigned int position) const;
+    void         set_color(Color color) const;
+    unsigned int get_position() const;
+    Color        get_color() const;
 
 private:
-    ImVec2 position;
-    Color  color;
+    unsigned int position;
+    Color        color;
 };
