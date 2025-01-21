@@ -6,15 +6,17 @@
 int main()
 {
     float value{0.f};
-    Board board({8, 32});
+    Board board(8);
     board.init();
+    board.debug();
 
     quick_imgui::loop("Chess", [&]() {}, [&]() {
-            ImGui::Begin("Board");
 
-            board.render();
+        ImGui::Begin("Board");
 
-            ImGui::End(); });
+        board.render();
+
+        ImGui::End(); });
 }
 
 // ImGui::PushID(2); // When some ImGui items have the same label (for exemple the next two buttons are labeled "Yo") ImGui needs you to specify an ID so that it can distinguish them. It can be an int, a pointer, a string, etc.

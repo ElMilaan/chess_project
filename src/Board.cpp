@@ -1,23 +1,13 @@
 #include "../lib/headers/Board.hpp"
 #include <math.h>
 
-Board::Board(unsigned int dimension, unsigned int nb_pieces)
-    : dimension(dimension), spaces(ImVector<Space>()), pieces(ImVector<Piece>()), nb_pieces(nb_pieces) {}
+Board::Board(unsigned int dimension)
+    : dimension(dimension), spaces(ImVector<Space>()), pieces(ImVector<Piece>()), nb_w_pieces(NB_W_PIECES), nb_b_pieces(NB_B_PIECES) {}
 
 // SETTERS
 void Board::set_dimension(unsigned int dimension) const
 {
     dimension = dimension;
-}
-
-void Board::set_spaces(ImVector<Space> spaces) const
-{
-    spaces = spaces;
-}
-
-void Board::set_pieces(ImVector<Piece> pieces) const
-{
-    pieces = pieces;
 }
 
 // GETTERS
@@ -26,21 +16,30 @@ unsigned int Board::get_dimension() const
     return dimension;
 }
 
-ImVector<Space> Board::get_spaces() const
+// DEBUG
+
+void Board::display_spaces()
 {
-    return spaces;
+    for (Space s : spaces)
+    {
+        s.display(dimension);
+    }
 }
 
-ImVector<Piece> Board::get_pieces() const
+void Board::debug()
 {
-    return pieces;
+    std::cout << "Nb White Pieces : " << nb_w_pieces
+              << "Nb Black Pieces : " << nb_b_pieces
+              << "\nNb Spaces : " << pow(dimension, 2);
+    std::cout << "\nSpaces :\n";
+    display_spaces();
 }
 
 // METHODS
 
 void Board::insert_space(const size_t pos, Color color)
 {
-    spaces.push_back(Space(static_cast<unsigned int>(pos), color));
+    spaces.push_back(Space(static_cast<unsigned int>(pos), color, nullptr));
 }
 
 void Board::fill_spaces()
@@ -50,14 +49,28 @@ void Board::fill_spaces()
         for (size_t j{1}; j <= dimension; j++)
         {
             Color color = ((i + j) % 2 == 0) ? Color::WHITE : Color::BLACK;
-            insert_space(i * dimension + j, color);
+            insert_space((i - 1) * dimension + j, color);
+        }
+    }
+}
+
+void Board::fill_pieces()
+{
+    for (auto p : PIECES_COUNT)
+    {
+        for (auto p : PIECES_COUNT)
+        {
+            for (size_t i{0}; i < p.second; i++)
+            {
+                // pieces.push_back();
+            }
         }
     }
 }
 
 ImVec4 gen_color(const Color& color)
 {
-    return (color == Color::WHITE) ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 1);
+    return (color == Color::WHITE) ? ImVec4(0.87, 0.72, 0.53, 1) : ImVec4(0.47, 0.27, 0.2, 1);
 }
 
 void Board::init()
@@ -68,8 +81,6 @@ void Board::init()
 void Board::render()
 {
     // RENDER LES CASES
-
-    unsigned int id{0};
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
     for (const Space s : spaces)
     {
@@ -79,7 +90,7 @@ void Board::render()
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, gen_color(s.get_color()));
 
         // Afficher un bouton carré de la taille de la case
-        ImGui::PushID(id);
+        ImGui::PushID(s.get_position());
         ImGui::Button("", {SPACE_SIZE, SPACE_SIZE});
         ImGui::PopID();
 
