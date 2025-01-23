@@ -102,7 +102,7 @@ void Board::fill_pieces()
     for (PieceType pt : PIECES_DISPOSITION)
     {
         insert_piece(pt, Color::BLACK);
-        nb_w_pieces++;
+        nb_b_pieces++;
     }
     for (int i{0}; i < dimension * 2; i++)
     {
@@ -116,19 +116,69 @@ void Board::fill_pieces()
     }
 }
 
-ImVec4 gen_color(const Color& color)
+void Board::set_space_style(const Color color)
 {
-    return (color == Color::WHITE) ? ImVec4(0.87, 0.72, 0.53, 1) : ImVec4(0.47, 0.27, 0.2, 1);
+    ImGui::PushStyleColor(ImGuiCol_Button, (color == Color::WHITE) ? colors.WHITE_SPACE : colors.BLACK_SPACE);
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (color == Color::WHITE) ? colors.WHITE_SPACE_HOVERED : colors.BLACK_SPACE_HOVERED);
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (color == Color::WHITE) ? colors.WHITE_SPACE_ACTIVE : colors.BLACK_SPACE_ACTIVE);
 }
 
-void change_to_white_font(const unsigned int pos)
+void Board::set_piece_style(Piece* piece_ptr, const char*& space_label)
 {
-    if (pos == 17)
-        ImGui::GetStyle().Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+    if (piece_ptr != nullptr)
+    {
+        (piece_ptr->get_color() == Color::WHITE) ? ImGui::GetStyle().Colors[ImGuiCol_Text] = colors.WHITE_PIECE
+                                                 : ImGui::GetStyle().Colors[ImGuiCol_Text] = colors.BLACK_PIECE;
+        space_label = piece_ptr->get_symbol();
+    }
+}
+
+void Board::no_action_button(const char* space_label)
+{
+    ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE});
+}
+
+void Board::first_click_button(Space& s, const char* space_label)
+{
+    if (ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE}))
+    {
+        selected_piece = s.get_piece_ptr();
+        std::cout << "first click at : " << s.get_position() << " , " << selected_piece << "\n";
+    }
+}
+
+void Board::second_click_button(Space& s, const char* space_label)
+{
+    if (ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE}))
+    {
+        selected_piece = nullptr;
+        std::cout << "second click at : " << s.get_position() << " , " << selected_piece << "\n";
+    }
+}
+
+void Board::create_button(Space s, const char* space_label, Color turn)
+{
+    ImGui::PushID(s.get_position());
+
+    if (s.get_piece_ptr() != nullptr && s.get_piece_ptr()->get_color() == turn)
+    {
+        first_click_button(s, space_label);
+    }
+    else if (selected_piece != nullptr)
+    {
+        second_click_button(s, space_label);
+    }
+    else
+    {
+        no_action_button(space_label);
+    }
+
+    ImGui::PopID();
 }
 
 void Board::init()
 {
+    selected_piece = nullptr;
     fill_pieces();
     fill_spaces();
 }
@@ -136,27 +186,19 @@ void Board::init()
 void Board::render()
 {
     // RENDER LES CASES
+
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-    ImGui::GetStyle().Colors[ImGuiCol_Text] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
     for (const Space s : spaces)
     {
-        // Définir la couleur de la case
-        ImGui::PushStyleColor(ImGuiCol_Button, gen_color(s.get_color()));
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, gen_color(s.get_color()));
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, gen_color(s.get_color()));
+        set_space_style(s.get_color());
 
-        change_to_white_font(s.get_position());
+        const char* space_label = "";
+        set_piece_style(s.get_piece_ptr(), space_label);
 
-        // Afficher un bouton carré de la taille de la case
-        ImGui::PushID(s.get_position());
-        const char* space_label = (s.get_piece_ptr() == nullptr) ? "" : s.get_piece_ptr()->get_symbol();
-        ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE});
-        ImGui::PopID();
+        create_button(s, space_label, Color::WHITE);
 
-        // Restaurer les couleurs précédentes
         ImGui::PopStyleColor(3);
 
-        // Ajout d'un espace pour coller les cases entre elles
         if (s.get_position() % 8 != 0)
         {
             ImGui::SameLine();

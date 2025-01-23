@@ -2,11 +2,7 @@
 
 class Bishop : public Piece {
 public:
-    Bishop(Color color)
-        : Piece(color)
-    {
-        symbol = "v";
-    };
+    Bishop(Color color);
 
 private:
 };

@@ -7,25 +7,18 @@
 void loadCustomFont()
 {
     ImGuiIO& io = ImGui::GetIO();
-    io.Fonts->AddFontFromFileTTF("C:/Users/Milan/Desktop/Travail/1 - IMAC/A2/Prog/S4/chess_project/lib/fonts/tt_usual.ttf", 48.0f);
+    io.Fonts->AddFontFromFileTTF("C:/Travail/IMAC/Programmation-C++/S4/chess_project/lib/fonts/tt_usual.ttf", 64.0f);
 }
 
 int main()
 {
-    float value{0.f};
-    Board board(8);
-    board.init();
-    board.debug();
-
-    ImGui::CreateContext();
-
-    loadCustomFont();
-
+    App* app = new App(8);
+    app->init();
     quick_imgui::loop("Chess", [&]() {}, [&]() {
 
         ImGui::Begin("Board");
 
-        board.render();
+        app->render();
 
         ImGui::End(); });
 }

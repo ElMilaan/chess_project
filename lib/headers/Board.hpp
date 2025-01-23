@@ -28,10 +28,12 @@ private:
     unsigned int    nb_b_pieces;
     ImVector<Space> spaces;
     ImVector<Piece> pieces;
+    Piece*          selected_piece;
 
 public:
     static const unsigned int                  SPACE_SIZE{100};
     static const inline std::vector<PieceType> PIECES_DISPOSITION{ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK};
+    const ColorUI                              colors{};
 
     Board(unsigned int dimension);
     void         set_dimension(unsigned int dimension) const;
@@ -45,6 +47,15 @@ public:
     void insert_piece(PieceType type, Color color);
     void fill_spaces();
     void fill_pieces();
+
     void init();
+
+    void set_space_style(Color color);
+    void set_piece_style(Piece* piece_ptr, const char*& space_label);
+
+    void no_action_button(const char* space_label);
+    void first_click_button(Space& s, const char* space_label);
+    void second_click_button(Space& s, const char* space_label);
+    void create_button(Space s, const char* space_label, Color turn);
     void render();
 };

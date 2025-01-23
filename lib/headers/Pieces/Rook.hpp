@@ -2,11 +2,7 @@
 
 class Rook : public Piece {
 public:
-    Rook(Color color)
-        : Piece(color)
-    {
-        symbol = "t";
-    };
+    Rook(Color color);
 
 private:
 };

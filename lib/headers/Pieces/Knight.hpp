@@ -2,11 +2,7 @@
 
 class Knight : public Piece {
 public:
-    Knight(Color color)
-        : Piece(color)
-    {
-        symbol = "m";
-    };
+    Knight(Color color);
 
 private:
 };

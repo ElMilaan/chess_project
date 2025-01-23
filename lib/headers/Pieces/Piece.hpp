@@ -2,19 +2,20 @@
 
 #include <iostream>
 #include <quick_imgui/quick_imgui.hpp>
+#include "../utils.hpp"
 
-enum Color {
-    WHITE,
-    BLACK
+enum Displacement {
+    DIAGONAL,
+    SIDES,
+    FRONT,
+    L
 };
 
 class Piece {
 public:
     Piece(Color color);
     virtual ~Piece() = default;
-    // void         set_position(unsigned int position) const;
-    void set_color(Color color) const;
-    // unsigned int get_position() const;
+    void        set_color(Color color) const;
     Color       get_color() const;
     const char* get_symbol() const;
 
@@ -22,7 +23,8 @@ public:
     // virtual ImVector<Space> possible_move() const = 0;
 
 protected:
-    // unsigned int position;
-    Color       color;
-    const char* symbol;
+    Color                     color;
+    const char*               symbol;
+    std::vector<Displacement> displacement;
+    bool                      infinite_range;
 };

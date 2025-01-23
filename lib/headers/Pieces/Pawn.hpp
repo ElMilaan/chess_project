@@ -2,11 +2,7 @@
 
 class Pawn : public Piece {
 public:
-    Pawn(Color color)
-        : Piece(color)
-    {
-        symbol = "o";
-    };
+    Pawn(Color color);
 
 private:
 };

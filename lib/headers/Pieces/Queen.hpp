@@ -2,11 +2,7 @@
 
 class Queen : public Piece {
 public:
-    Queen(Color color)
-        : Piece(color)
-    {
-        symbol = "w";
-    };
+    Queen(Color color);
 
 private:
 };
