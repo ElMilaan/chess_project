@@ -28,7 +28,7 @@ private:
     unsigned int    nb_b_pieces;
     ImVector<Space> spaces;
     ImVector<Piece> pieces;
-    Piece*          selected_piece;
+    Space*          selected_space;
 
 public:
     static const unsigned int                  SPACE_SIZE{100};
@@ -54,8 +54,8 @@ public:
     void set_piece_style(Piece* piece_ptr, const char*& space_label);
 
     void no_action_button(const char* space_label);
-    void first_click_button(Space& s, const char* space_label);
-    void second_click_button(Space& s, const char* space_label);
-    void create_button(Space s, const char* space_label, Color turn);
+    void first_click_button(Space* s, const char* space_label);
+    void second_click_button(Space* s, const char* space_label);
+    void create_button(Space* s, const char* space_label, Color turn);
     void render();
 };

@@ -138,47 +138,39 @@ void Board::no_action_button(const char* space_label)
     ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE});
 }
 
-void Board::first_click_button(Space& s, const char* space_label)
+void Board::first_click_button(Space* s, const char* space_label)
 {
     if (ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE}))
     {
-        selected_piece = s.get_piece_ptr();
-        std::cout << "first click at : " << s.get_position() << " , " << selected_piece << "\n";
+        selected_space = s;
+        std::cout << "first click at : " << s->get_position() << " , " << selected_space << "\n";
     }
 }
 
-void Board::second_click_button(Space& s, const char* space_label)
+void Board::second_click_button(Space* s, const char* space_label)
 {
     if (ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE}))
     {
-        selected_piece = nullptr;
-        std::cout << "second click at : " << s.get_position() << " , " << selected_piece << "\n";
+        std::cout << "La case d'origine : " << selected_space << ", La case d'arrivee : " << s << std::endl;
+        selected_space = nullptr;
     }
 }
 
-void Board::create_button(Space s, const char* space_label, Color turn)
+void Board::create_button(Space* s, const char* space_label, Color turn)
 {
-    ImGui::PushID(s.get_position());
+    ImGui::PushID(s->get_position());
 
-    if (s.get_piece_ptr() != nullptr && s.get_piece_ptr()->get_color() == turn)
-    {
+    if (s->get_piece_ptr() && s->get_piece_ptr()->get_color() == turn)
         first_click_button(s, space_label);
-    }
-    else if (selected_piece != nullptr)
-    {
-        second_click_button(s, space_label);
-    }
     else
-    {
-        no_action_button(space_label);
-    }
+        (selected_space == nullptr) ? no_action_button(space_label) : second_click_button(s, space_label);
 
     ImGui::PopID();
 }
 
 void Board::init()
 {
-    selected_piece = nullptr;
+    selected_space = nullptr;
     fill_pieces();
     fill_spaces();
 }
@@ -188,18 +180,18 @@ void Board::render()
     // RENDER LES CASES
 
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-    for (const Space s : spaces)
+    for (auto s = spaces.begin(); s != spaces.end(); s++)
     {
-        set_space_style(s.get_color());
+        set_space_style(s->get_color());
 
         const char* space_label = "";
-        set_piece_style(s.get_piece_ptr(), space_label);
+        set_piece_style(s->get_piece_ptr(), space_label);
 
         create_button(s, space_label, Color::WHITE);
 
         ImGui::PopStyleColor(3);
 
-        if (s.get_position() % 8 != 0)
+        if (s->get_position() % 8 != 0)
         {
             ImGui::SameLine();
         }
