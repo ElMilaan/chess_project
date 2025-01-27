@@ -12,7 +12,9 @@ void Board::set_dimension(unsigned int dimension) const
 
 void Board::handle_turn()
 {
-    turn = WHITE ? BLACK : WHITE;
+    (turn == WHITE)
+        ? turn = BLACK
+        : turn = WHITE;
 }
 
 // GETTERS
@@ -160,9 +162,12 @@ void Board::second_click_button(Space& s, const char* space_label)
 {
     if (ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE}))
     {
+        // IF CAN MOVE THIS WAY {
         selected_space->move_piece(s);
         selected_space->set_piece_ptr(nullptr);
         selected_space = nullptr;
+        handle_turn();
+        // }
     }
 }
 

@@ -4,12 +4,6 @@
 #include "../lib/headers/App.hpp"
 #include "quick_imgui/quick_imgui.hpp"
 
-void loadCustomFont()
-{
-    ImGuiIO& io = ImGui::GetIO();
-    io.Fonts->AddFontFromFileTTF("C:/Travail/IMAC/Programmation-C++/S4/chess_project/lib/fonts/tt_usual.ttf", 64.0f);
-}
-
 int main()
 {
     App* app = new App(8);
