@@ -19,9 +19,6 @@ public:
     Color       get_color() const;
     const char* get_symbol() const;
 
-    // virtual void can_move() const = 0;
-    // virtual ImVector<Space> possible_move() const = 0;
-
 protected:
     Color                     color;
     const char*               symbol;

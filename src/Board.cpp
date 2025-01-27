@@ -2,12 +2,17 @@
 #include <math.h>
 
 Board::Board(unsigned int dimension)
-    : dimension(dimension), spaces(ImVector<Space>()), pieces(ImVector<Piece>()), nb_w_pieces(0), nb_b_pieces(0) {}
+    : dimension(dimension), spaces(ImVector<Space>()), pieces(ImVector<Piece>()), nb_w_pieces(0), nb_b_pieces(0), turn(WHITE) {}
 
 // SETTERS
 void Board::set_dimension(unsigned int dimension) const
 {
     dimension = dimension;
+}
+
+void Board::handle_turn()
+{
+    turn = WHITE ? BLACK : WHITE;
 }
 
 // GETTERS
@@ -16,13 +21,17 @@ unsigned int Board::get_dimension() const
     return dimension;
 }
 
+Color Board::get_turn() const
+{
+    return turn;
+}
 // DEBUG
 
 void Board::display_pieces()
 {
     for (Piece p : pieces)
     {
-        std::cout << " | " << ((p.get_color() == Color::WHITE) ? "W" : "B") << "," << p.get_symbol() << " | ";
+        std::cout << " | " << ((p.get_color() == WHITE) ? "W" : "B") << "," << p.get_symbol() << " | ";
     }
 }
 
@@ -59,7 +68,7 @@ void Board::fill_spaces()
     {
         for (size_t j{1}; j <= dimension; j++)
         {
-            Color  color     = ((i + j) % 2 == 0) ? Color::WHITE : Color::BLACK;
+            Color  color     = ((i + j) % 2 == 0) ? WHITE : BLACK;
             Piece* piece_ptr = nullptr;
 
             if (i == 1 || i == 2 || i == dimension || i == dimension - 1)
@@ -101,12 +110,12 @@ void Board::fill_pieces()
 {
     for (PieceType pt : PIECES_DISPOSITION)
     {
-        insert_piece(pt, Color::BLACK);
+        insert_piece(pt, BLACK);
         nb_b_pieces++;
     }
     for (int i{0}; i < dimension * 2; i++)
     {
-        (i < dimension) ? insert_piece(PieceType::PAWN, Color::BLACK) : insert_piece(PieceType::PAWN, Color::WHITE);
+        (i < dimension) ? insert_piece(PieceType::PAWN, BLACK) : insert_piece(PieceType::PAWN, WHITE);
     }
 
     for (auto it = PIECES_DISPOSITION.rbegin(); it != PIECES_DISPOSITION.rend(); it++)
@@ -118,17 +127,17 @@ void Board::fill_pieces()
 
 void Board::set_space_style(const Color color)
 {
-    ImGui::PushStyleColor(ImGuiCol_Button, (color == Color::WHITE) ? colors.WHITE_SPACE : colors.BLACK_SPACE);
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (color == Color::WHITE) ? colors.WHITE_SPACE_HOVERED : colors.BLACK_SPACE_HOVERED);
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (color == Color::WHITE) ? colors.WHITE_SPACE_ACTIVE : colors.BLACK_SPACE_ACTIVE);
+    ImGui::PushStyleColor(ImGuiCol_Button, (color == WHITE) ? colors.WHITE_SPACE : colors.BLACK_SPACE);
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (color == WHITE) ? colors.WHITE_SPACE_HOVERED : colors.BLACK_SPACE_HOVERED);
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (color == WHITE) ? colors.WHITE_SPACE_ACTIVE : colors.BLACK_SPACE_ACTIVE);
 }
 
 void Board::set_piece_style(Piece* piece_ptr, const char*& space_label)
 {
     if (piece_ptr != nullptr)
     {
-        (piece_ptr->get_color() == Color::WHITE) ? ImGui::GetStyle().Colors[ImGuiCol_Text] = colors.WHITE_PIECE
-                                                 : ImGui::GetStyle().Colors[ImGuiCol_Text] = colors.BLACK_PIECE;
+        (piece_ptr->get_color() == WHITE) ? ImGui::GetStyle().Colors[ImGuiCol_Text] = colors.WHITE_PIECE
+                                          : ImGui::GetStyle().Colors[ImGuiCol_Text] = colors.BLACK_PIECE;
         space_label = piece_ptr->get_symbol();
     }
 }
@@ -138,32 +147,33 @@ void Board::no_action_button(const char* space_label)
     ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE});
 }
 
-void Board::first_click_button(Space* s, const char* space_label)
+void Board::first_click_button(Space& s, const char* space_label)
 {
     if (ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE}))
     {
-        selected_space = s;
-        std::cout << "first click at : " << s->get_position() << " , " << selected_space << "\n";
+        selected_space = &s;
+        // std::cout << "first click at : " << s.get_position() << " , " << selected_space << "\n";
     }
 }
 
-void Board::second_click_button(Space* s, const char* space_label)
+void Board::second_click_button(Space& s, const char* space_label)
 {
     if (ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE}))
     {
-        std::cout << "La case d'origine : " << selected_space << ", La case d'arrivee : " << s << std::endl;
+        selected_space->move_piece(s);
+        selected_space->set_piece_ptr(nullptr);
         selected_space = nullptr;
     }
 }
 
-void Board::create_button(Space* s, const char* space_label, Color turn)
+void Board::create_button(Space& s, const char* space_label)
 {
-    ImGui::PushID(s->get_position());
+    ImGui::PushID(s.get_position());
 
-    if (s->get_piece_ptr() && s->get_piece_ptr()->get_color() == turn)
+    if (s.get_piece_ptr() && s.get_piece_ptr()->get_color() == turn)
         first_click_button(s, space_label);
     else
-        (selected_space == nullptr) ? no_action_button(space_label) : second_click_button(s, space_label);
+        (!selected_space) ? no_action_button(space_label) : second_click_button(s, space_label);
 
     ImGui::PopID();
 }
@@ -177,21 +187,19 @@ void Board::init()
 
 void Board::render()
 {
-    // RENDER LES CASES
-
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-    for (auto s = spaces.begin(); s != spaces.end(); s++)
+    for (Space& s : spaces)
     {
-        set_space_style(s->get_color());
+        set_space_style(s.get_color());
 
         const char* space_label = "";
-        set_piece_style(s->get_piece_ptr(), space_label);
+        set_piece_style(s.get_piece_ptr(), space_label);
 
-        create_button(s, space_label, Color::WHITE);
+        create_button(s, space_label);
 
         ImGui::PopStyleColor(3);
 
-        if (s->get_position() % 8 != 0)
+        if (s.get_position() % 8 != 0)
         {
             ImGui::SameLine();
         }

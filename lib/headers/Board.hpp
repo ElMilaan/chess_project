@@ -29,6 +29,7 @@ private:
     ImVector<Space> spaces;
     ImVector<Piece> pieces;
     Space*          selected_space;
+    Color           turn;
 
 public:
     static const unsigned int                  SPACE_SIZE{100};
@@ -36,8 +37,10 @@ public:
     const ColorUI                              colors{};
 
     Board(unsigned int dimension);
-    void         set_dimension(unsigned int dimension) const;
     unsigned int get_dimension() const;
+    Color        get_turn() const;
+    void         set_dimension(unsigned int dimension) const;
+    void         handle_turn();
 
     void display_pieces();
     void display_spaces();
@@ -54,8 +57,8 @@ public:
     void set_piece_style(Piece* piece_ptr, const char*& space_label);
 
     void no_action_button(const char* space_label);
-    void first_click_button(Space* s, const char* space_label);
-    void second_click_button(Space* s, const char* space_label);
-    void create_button(Space* s, const char* space_label, Color turn);
+    void first_click_button(Space& s, const char* space_label);
+    void second_click_button(Space& s, const char* space_label);
+    void create_button(Space& s, const char* space_label);
     void render();
 };

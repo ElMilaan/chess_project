@@ -1,12 +1,15 @@
 #include <cmath>
 #include "../lib/headers/Board.hpp"
 
+Space::Space()
+    : piece_ptr(nullptr), position(-1) {}
+
 Space::Space(const unsigned int position, Color color, Piece* piece_ptr)
     : position(position), color(color), piece_ptr(piece_ptr) {}
 
 // GETTERS
 
-unsigned int Space::get_position() const
+int Space::get_position() const
 {
     return position;
 }
@@ -24,7 +27,7 @@ Piece* Space::get_piece_ptr() const
 
 void Space::set_piece_ptr(Piece* piece_ptr)
 {
-    piece_ptr = piece_ptr;
+    this->piece_ptr = piece_ptr;
 }
 
 // UTILS
@@ -44,5 +47,5 @@ bool Space::is_border(const unsigned int dim) const
 void Space::move_piece(Space& dest)
 {
     dest.set_piece_ptr(piece_ptr);
-    piece_ptr = nullptr;
+    this->piece_ptr = nullptr;
 }
