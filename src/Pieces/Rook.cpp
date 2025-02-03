@@ -1,10 +1,13 @@
 #include "../lib/headers/Pieces/Rook.hpp"
 #include "../lib/headers/Pieces/Piece.hpp"
 
-Rook::Rook(Color color)
-    : Piece(color)
+Rook::Rook(Color color, const unsigned int position)
+    : Piece(color, position)
 {
-    symbol = "t";
-    displacement.push_back(Displacement::SIDES);
+    symbol         = "t";
     infinite_range = true;
 };
+
+void Rook::move()
+{
+}

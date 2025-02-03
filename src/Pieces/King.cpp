@@ -1,11 +1,13 @@
 #include "../lib/headers/Pieces/King.hpp"
 #include "../lib/headers/Pieces/Piece.hpp"
 
-King::King(Color color)
-    : Piece(color)
+King::King(Color color, const unsigned int position)
+    : Piece(color, position)
 {
-    symbol = "l";
-    displacement.push_back(Displacement::DIAGONAL);
-    displacement.push_back(Displacement::SIDES);
+    symbol         = "l";
     infinite_range = false;
 };
+
+void King::move()
+{
+}

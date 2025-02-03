@@ -4,24 +4,25 @@
 #include <quick_imgui/quick_imgui.hpp>
 #include "../utils.hpp"
 
-enum Displacement {
-    DIAGONAL,
-    SIDES,
-    FRONT,
-    L
-};
-
 class Piece {
 public:
-    Piece(Color color);
+    Piece(Color color, const unsigned int position);
     virtual ~Piece() = default;
-    void        set_color(Color color) const;
-    Color       get_color() const;
-    const char* get_symbol() const;
+
+    void set_color(Color color) const;
+
+    Color        get_color() const;
+    const char*  get_symbol() const;
+    unsigned int get_position() const;
+    bool         is_infinite_range() const;
+
+    bool is_border(const unsigned int dim) const;
+
+    virtual void move();
 
 protected:
-    Color                     color;
-    const char*               symbol;
-    std::vector<Displacement> displacement;
-    bool                      infinite_range;
+    unsigned int position;
+    Color        color;
+    const char*  symbol;
+    bool         infinite_range;
 };

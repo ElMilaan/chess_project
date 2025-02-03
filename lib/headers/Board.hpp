@@ -10,7 +10,6 @@
 #include "Pieces/Piece.hpp"
 #include "Pieces/Queen.hpp"
 #include "Pieces/Rook.hpp"
-#include "Space.hpp"
 
 enum PieceType {
     KING,
@@ -23,13 +22,14 @@ enum PieceType {
 
 class Board {
 private:
-    unsigned int    dimension;
-    unsigned int    nb_w_pieces;
-    unsigned int    nb_b_pieces;
-    ImVector<Space> spaces;
-    ImVector<Piece> pieces;
-    Space*          selected_space;
-    Color           turn;
+    unsigned int        dimension;
+    unsigned int        nb_w_pieces;
+    unsigned int        nb_b_pieces;
+    ImVector<Piece>     pieces;
+    ImVector<Piece*>    spaces;
+    Piece*              selected_piece;
+    std::map<int, bool> possible_spaces;
+    Color               turn;
 
 public:
     static const unsigned int                  SPACE_SIZE{100};
@@ -43,13 +43,11 @@ public:
     void         handle_turn();
 
     void display_pieces();
-    void display_spaces();
     void debug();
 
-    void insert_space(const size_t pos, Color color, Piece* piece);
-    void insert_piece(PieceType type, Color color);
-    void fill_spaces();
+    void insert_piece(PieceType type, Color color, const unsigned int position);
     void fill_pieces();
+    void fill_spaces();
 
     void init();
 
@@ -57,8 +55,8 @@ public:
     void set_piece_style(Piece* piece_ptr, const char*& space_label);
 
     void no_action_button(const char* space_label);
-    void first_click_button(Space& s, const char* space_label);
-    void second_click_button(Space& s, const char* space_label);
-    void create_button(Space& s, const char* space_label);
+    void first_click_button(Piece*& p, const char* space_label);
+    void second_click_button(Piece*& p, const char* space_label);
+    void create_button(Piece*& p, const char* space_label);
     void render();
 };

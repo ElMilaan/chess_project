@@ -2,7 +2,7 @@
 #include <math.h>
 
 Board::Board(unsigned int dimension)
-    : dimension(dimension), spaces(ImVector<Space>()), pieces(ImVector<Piece>()), nb_w_pieces(0), nb_b_pieces(0), turn(WHITE) {}
+    : dimension(dimension), pieces(ImVector<Piece>()), nb_w_pieces(0), nb_b_pieces(0), turn(WHITE) {}
 
 // SETTERS
 void Board::set_dimension(unsigned int dimension) const
@@ -31,17 +31,9 @@ Color Board::get_turn() const
 
 void Board::display_pieces()
 {
-    for (Piece p : pieces)
+    for (const Piece& p : pieces)
     {
         std::cout << " | " << ((p.get_color() == WHITE) ? "W" : "B") << "," << p.get_symbol() << " | ";
-    }
-}
-
-void Board::display_spaces()
-{
-    for (Space s : spaces)
-    {
-        s.display(dimension);
     }
 }
 
@@ -51,79 +43,70 @@ void Board::debug()
               << "\nNb Black Pieces : " << nb_b_pieces
               << "\nPieces : \n";
     display_pieces();
-    std::cout << "\nNb Spaces : " << pow(dimension, 2)
-              << "\nSpaces :\n";
-    display_spaces();
 }
 
 // METHODS
 
-void Board::insert_space(const size_t pos, Color color, Piece* piece_ptr)
-{
-    spaces.push_back(Space(static_cast<unsigned int>(pos), color, piece_ptr));
-}
-
-void Board::fill_spaces()
-{
-    size_t piece_index{0};
-    for (size_t i{1}; i <= dimension; i++)
-    {
-        for (size_t j{1}; j <= dimension; j++)
-        {
-            Color  color     = ((i + j) % 2 == 0) ? WHITE : BLACK;
-            Piece* piece_ptr = nullptr;
-
-            if (i == 1 || i == 2 || i == dimension || i == dimension - 1)
-            {
-                piece_ptr = &pieces[piece_index];
-                piece_index++;
-            }
-            insert_space((i - 1) * dimension + j, color, piece_ptr);
-        }
-    }
-}
-
-void Board::insert_piece(PieceType type, Color color)
+void Board::insert_piece(PieceType type, Color color, const unsigned int position)
 {
     switch (type)
     {
     case PieceType::KING:
-        pieces.push_back(King(color));
+        pieces.push_back(King(color, position));
         break;
     case PieceType::QUEEN:
-        pieces.push_back(Queen(color));
+        pieces.push_back(Queen(color, position));
         break;
     case PieceType::BISHOP:
-        pieces.push_back(Bishop(color));
+        pieces.push_back(Bishop(color, position));
         break;
     case PieceType::ROOK:
-        pieces.push_back(Rook(color));
+        pieces.push_back(Rook(color, position));
         break;
     case PieceType::KNIGHT:
-        pieces.push_back(Knight(color));
+        pieces.push_back(Knight(color, position));
         break;
     case PieceType::PAWN:
-        pieces.push_back(Pawn(color));
+        pieces.push_back(Pawn(color, position));
         break;
     }
 }
 
 void Board::fill_pieces()
 {
-    for (PieceType pt : PIECES_DISPOSITION)
+    for (size_t i{0}; i < dimension; i++)
     {
-        insert_piece(pt, BLACK);
-        nb_b_pieces++;
-    }
-    for (int i{0}; i < dimension * 2; i++)
-    {
-        (i < dimension) ? insert_piece(PieceType::PAWN, BLACK) : insert_piece(PieceType::PAWN, WHITE);
+        for (PieceType pt : PIECES_DISPOSITION)
+        {
+            insert_piece(pt, BLACK, i);
+            insert_piece(PAWN, BLACK, i + dimension);
+            nb_b_pieces++;
+        }
     }
 
-    for (auto it = PIECES_DISPOSITION.rbegin(); it != PIECES_DISPOSITION.rend(); it++)
+    for (size_t i{(size_t)pow(dimension, 2) - 1}; i > (size_t)pow(dimension, 2) - dimension; i--)
     {
-        insert_piece(*it, Color::WHITE);
-        nb_w_pieces++;
+        for (auto it = PIECES_DISPOSITION.rbegin(); it != PIECES_DISPOSITION.rend(); it++)
+        {
+            insert_piece(*it, WHITE, i);
+            insert_piece(PAWN, WHITE, i - dimension);
+            nb_w_pieces++;
+        }
+    }
+}
+
+void Board::fill_spaces()
+{
+    for (int i{0}; i < pow(dimension, 2); i++)
+    {
+        if (i < pieces.size())
+        {
+            spaces.push_back(&pieces[i]);
+        }
+        else
+        {
+            spaces.push_back(nullptr);
+        }
     }
 }
 
@@ -143,49 +126,48 @@ void Board::set_piece_style(Piece* piece_ptr, const char*& space_label)
         space_label = piece_ptr->get_symbol();
     }
 }
-
 void Board::no_action_button(const char* space_label)
 {
     ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE});
 }
 
-void Board::first_click_button(Space& s, const char* space_label)
+void Board::first_click_button(Piece*& p, const char* space_label)
 {
     if (ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE}))
     {
-        selected_space = &s;
-        // std::cout << "first click at : " << s.get_position() << " , " << selected_space << "\n";
+        selected_piece = p;
+        std::cout << "cases possibles : " << possible_spaces.size();
     }
 }
 
-void Board::second_click_button(Space& s, const char* space_label)
+void Board::second_click_button(Piece*& p, const char* space_label)
 {
     if (ImGui::Button(space_label, {SPACE_SIZE, SPACE_SIZE}))
     {
-        // IF CAN MOVE THIS WAY {
-        selected_space->move_piece(s);
-        selected_space->set_piece_ptr(nullptr);
-        selected_space = nullptr;
+        // if (possible_spaces.contains(s.get_position()))
+        // {
+        selected_piece->move();
+        selected_piece = nullptr;
         handle_turn();
         // }
     }
 }
 
-void Board::create_button(Space& s, const char* space_label)
+void Board::create_button(Piece*& p, const char* space_label)
 {
-    ImGui::PushID(s.get_position());
+    ImGui::PushID(p->get_position());
 
-    if (s.get_piece_ptr() && s.get_piece_ptr()->get_color() == turn)
-        first_click_button(s, space_label);
+    if (p && p->get_color() == turn)
+        first_click_button(p, space_label);
     else
-        (!selected_space) ? no_action_button(space_label) : second_click_button(s, space_label);
+        (!selected_piece) ? no_action_button(space_label) : second_click_button(p, space_label);
 
     ImGui::PopID();
 }
 
 void Board::init()
 {
-    selected_space = nullptr;
+    selected_piece = nullptr;
     fill_pieces();
     fill_spaces();
 }
@@ -193,18 +175,18 @@ void Board::init()
 void Board::render()
 {
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-    for (Space& s : spaces)
+    for (Piece* p : spaces)
     {
-        set_space_style(s.get_color());
+        // set_space_style(p->get_position());
 
         const char* space_label = "";
-        set_piece_style(s.get_piece_ptr(), space_label);
+        set_piece_style(p, space_label);
 
-        create_button(s, space_label);
+        create_button(p, space_label);
 
-        ImGui::PopStyleColor(3);
+        // ImGui::PopStyleColor(1);
 
-        if (s.get_position() % 8 != 0)
+        if (p->get_position() % 8 != 0)
         {
             ImGui::SameLine();
         }
