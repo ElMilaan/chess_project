@@ -7,7 +7,3 @@ King::King(Color color, const unsigned int position)
     symbol         = "l";
     infinite_range = false;
 };
-
-void King::move()
-{
-}

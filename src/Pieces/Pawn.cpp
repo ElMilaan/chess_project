@@ -7,7 +7,3 @@ Pawn::Pawn(Color color, const unsigned int position)
     symbol         = "o";
     infinite_range = false;
 };
-
-void Pawn::move()
-{
-}

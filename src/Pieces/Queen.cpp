@@ -7,7 +7,3 @@ Queen::Queen(Color color, const unsigned int position)
     symbol         = "w";
     infinite_range = true;
 };
-
-void Queen::move()
-{
-}

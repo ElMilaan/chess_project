@@ -4,7 +4,7 @@
 class Rook : public Piece {
 public:
     Rook(Color color, const unsigned int position);
-    void move() override;
+    // void move() override;
 
 private:
 };

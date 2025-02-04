@@ -4,7 +4,7 @@
 class Bishop : public Piece {
 public:
     Bishop(Color color, const unsigned int position);
-    void move() override;
+    // void move() override;
 
 private:
 };

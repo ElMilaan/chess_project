@@ -4,7 +4,7 @@
 class Queen : public Piece {
 public:
     Queen(Color color, const unsigned int position);
-    void move() override;
+    // void move() override;
 
 private:
 };

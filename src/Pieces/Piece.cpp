@@ -28,6 +28,11 @@ void Piece::set_color(Color color) const
     color = color;
 }
 
+void Piece::set_position(const unsigned int new_position)
+{
+    position = new_position;
+}
+
 // METHODS
 
 bool Piece::is_border(const unsigned int dim) const
@@ -40,4 +45,10 @@ bool Piece::is_infinite_range() const
     return infinite_range;
 }
 
-void Piece::move() {}
+void Piece::move(std::vector<Piece*>& spaces, size_t index)
+{
+    size_t current_position  = position;
+    position                 = index;
+    spaces[current_position] = nullptr;
+    spaces[index]            = this;
+}

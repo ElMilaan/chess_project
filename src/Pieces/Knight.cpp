@@ -7,7 +7,3 @@ Knight::Knight(Color color, const unsigned int position)
     symbol         = "m";
     infinite_range = false;
 };
-
-void Knight::move()
-{
-}

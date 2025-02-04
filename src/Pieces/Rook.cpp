@@ -7,7 +7,3 @@ Rook::Rook(Color color, const unsigned int position)
     symbol         = "t";
     infinite_range = true;
 };
-
-void Rook::move()
-{
-}

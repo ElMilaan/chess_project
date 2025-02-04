@@ -10,6 +10,7 @@ public:
     virtual ~Piece() = default;
 
     void set_color(Color color) const;
+    void set_position(const unsigned int new_position);
 
     Color        get_color() const;
     const char*  get_symbol() const;
@@ -18,7 +19,7 @@ public:
 
     bool is_border(const unsigned int dim) const;
 
-    virtual void move();
+    void move(std::vector<Piece*>& spaces, size_t index);
 
 protected:
     unsigned int position;

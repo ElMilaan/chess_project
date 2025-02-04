@@ -7,7 +7,3 @@ Bishop::Bishop(Color color, const unsigned int position)
     symbol         = "v";
     infinite_range = true;
 };
-
-void Bishop::move()
-{
-}

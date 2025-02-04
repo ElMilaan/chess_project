@@ -4,7 +4,7 @@
 class Knight : public Piece {
 public:
     Knight(Color color, const unsigned int position);
-    void move() override;
+    // void move() override;
 
 private:
 };

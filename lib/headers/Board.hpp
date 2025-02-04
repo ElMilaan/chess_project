@@ -25,8 +25,7 @@ private:
     unsigned int        dimension;
     unsigned int        nb_w_pieces;
     unsigned int        nb_b_pieces;
-    ImVector<Piece>     pieces;
-    ImVector<Piece*>    spaces;
+    std::vector<Piece*> spaces;
     Piece*              selected_piece;
     std::map<int, bool> possible_spaces;
     Color               turn;
@@ -42,21 +41,20 @@ public:
     void         set_dimension(unsigned int dimension) const;
     void         handle_turn();
 
-    void display_pieces();
-    void debug();
+    void display_spaces();
 
     void insert_piece(PieceType type, Color color, const unsigned int position);
     void fill_pieces();
-    void fill_spaces();
 
     void init();
+    void update();
 
     void set_space_style(Color color);
     void set_piece_style(Piece* piece_ptr, const char*& space_label);
 
     void no_action_button(const char* space_label);
-    void first_click_button(Piece*& p, const char* space_label);
-    void second_click_button(Piece*& p, const char* space_label);
-    void create_button(Piece*& p, const char* space_label);
+    void first_click_button(size_t index, const char* space_label);
+    void second_click_button(size_t index, const char* space_label);
+    void create_button(size_t index, const char* space_label);
     void render();
 };

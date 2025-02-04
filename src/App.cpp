@@ -12,6 +12,7 @@ void App::init()
 
 void App::update()
 {
+    board.update();
     render();
 };
 
